@@ -23,16 +23,39 @@ class JigsawPuzzle: SKScene {
         backgroundColor = UIColor.lightGrayColor()
         setBorder()
         startNewPuzzleGameLevel()
-       
+        restartButton()
     }
+    func restartButton(){
+        
+        let button = SKButton(color: .redColor(), size: .zero)
+        button.animatable = true
+        button.size = CGSize(width: 100, height: 50)
+        button.anchorPoint = CGPoint(x: 0, y: 0)
+        button.position = CGPoint(x: 5, y: frame.height - 55)
+        button.zPosition = 101
+        button.setTitle("Restart")
+        //button.setImageForState(UIImage(named: "menu")!, state: SKButtonState.Normal)
+        //button.setImageForState(UIImage(named: "menu_clicked")!, state: SKButtonState.Highlighted)
+        button.addTarget(self, selector: "tapped", event: SKButtonEvent.TouchUpInside)
+        addChild(button)
+    }
+    func tapped(){
+        border?.removeAllChildren()
+        startNewPuzzleGameLevel()
+    }
+
+    
     func startNewPuzzleGameLevel(){
         border?.removeAllChildren()
         let tilesInLine = 9
+        pieces.removeAll()
         piecesCount = tilesInLine * tilesInLine
-        
-        let image = UIImage(named: "car")!
-        
-        imageTiles = image.jigSawCuter(CGSize(width: 760, height: 698), piecesCount: piecesCount!)
+        if imageTiles.0.count == 0{
+            let image = UIImage(named: "car")!
+            
+            imageTiles = image.jigSawCuter(CGSize(width: 760, height: 698), piecesCount: piecesCount!)
+        }
+
         for i in 0...80{
             setPiece(CGSize(width: width, height: width), index : i)
             
@@ -61,8 +84,8 @@ class JigsawPuzzle: SKScene {
 
     func smashAndCrashDown(){
         
-        let fallRect1 = CGRectMake(50, 50, frame.width - 100, 5)                   //down rect (unused)
-        let fallRect2 = CGRectMake(50, frame.height - 130, frame.width - 100, 5)   //up rect (unused)
+//        let fallRect1 = CGRectMake(50, 50, frame.width - 100, 5)                   //down rect (unused)
+//        let fallRect2 = CGRectMake(50, frame.height - 130, frame.width - 100, 5)   //up rect (unused)
         let fallRect3 = CGRectMake(55, 50, 5, frame.height - 110)                  //left rect
         let fallRect4 = CGRectMake(frame.width - 65, 50, 5, frame.height - 110)   //right rect
         let rects = [fallRect3, fallRect4]

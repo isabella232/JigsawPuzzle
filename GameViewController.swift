@@ -13,10 +13,8 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //Replace with 
-        //let scene = SliddingPuzzle(fileNamed: "")
-        //to open sliding puzzle file
-        if let scene = JigsawPuzzle(fileNamed: ""){
+        let scene = SliddingPuzzle()
+        // let scene = JigsawPuzzle()
             // Configure the view.
             let skView = self.view as! SKView
             skView.showsFPS = true
@@ -27,9 +25,10 @@ class GameViewController: UIViewController {
             
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = .AspectFill
-            
+            scene.size = skView.frame.size
+
             skView.presentScene(scene)
-        }
+        
     }
 
     override func shouldAutorotate() -> Bool {

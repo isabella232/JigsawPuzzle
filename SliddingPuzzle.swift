@@ -7,6 +7,7 @@
 //
 
 import SpriteKit
+import GameKit
 
 class SliddingPuzzle: SKScene {
     var border : SKNode?
@@ -28,10 +29,29 @@ class SliddingPuzzle: SKScene {
         //\//\\
         ///\\//
         startNewImageGameLevel(ImageLevels.easy, image: UIImage(named: "car.jpg")!)
-       
+        restartButton()
+    }
+    func restartButton(){
+        
+        let button = SKButton(color: .redColor(), size: .zero)
+        button.animatable = true
+        button.size = CGSize(width: 100, height: 50)
+        button.anchorPoint = CGPoint(x: 0, y: 0)
+        button.position = CGPoint(x: 5, y: frame.height - 55)
+        button.zPosition = 101
+        button.setTitle("Restart")
+        button.addTarget(self, selector: "tapped", event: SKButtonEvent.TouchUpInside)
+        addChild(button)
+    }
+    
+    func tapped(){
+        border?.removeAllChildren()
+        startNewImageGameLevel(.easy, image: UIImage(named: "car.jpg")!)
     }
     func startNewNumberGameLevel(level : NumberLevels){
         border?.removeAllChildren()
+        tiles.removeAll()
+        points.removeAll()
         let tilesInLine = level.rawValue
         tilesCount = tilesInLine * tilesInLine
         
@@ -58,6 +78,8 @@ class SliddingPuzzle: SKScene {
     }
     func startNewImageGameLevel(level : ImageLevels, image : UIImage){
         border?.removeAllChildren()
+        tiles.removeAll()
+        points.removeAll()
         let tilesInLine = level.rawValue
         tilesCount = tilesInLine * tilesInLine
         
@@ -88,12 +110,18 @@ class SliddingPuzzle: SKScene {
     }
     
     func putTilesInRandomPoints(animate : Bool){
-        let randomizedPoints = points.shuffle()
+        var values = [NSValue]()
+        for point in points {
+            values.append(NSValue(CGPoint: point))
+        }
+        values = GKRandomSource.sharedRandom().arrayByShufflingObjectsInArray(values) as! [NSValue]
+        
+        let randomizedPoints = values
         for tile in tiles {
             if animate{
-                tile.wrongPostion = randomizedPoints[self.tiles.indexOf(tile)!]
+                tile.wrongPostion = randomizedPoints[self.tiles.indexOf(tile)!].CGPointValue()
                 let wait = SKAction.waitForDuration(3.0)
-                let action = SKAction.moveTo(randomizedPoints[tiles.indexOf(tile)!], duration: 0.65)
+                let action = SKAction.moveTo(randomizedPoints[tiles.indexOf(tile)!].CGPointValue(), duration: 0.65)
                 
                 let group = SKAction.sequence([wait, action])
                 tile.runAction(group, completion: { () -> Void in
@@ -101,8 +129,8 @@ class SliddingPuzzle: SKScene {
                     
                 })
             }else{
-                tile.position = randomizedPoints[tiles.indexOf(tile)!]
-                tile.wrongPostion = randomizedPoints[tiles.indexOf(tile)!]
+                tile.position = randomizedPoints[tiles.indexOf(tile)!].CGPointValue()
+                tile.wrongPostion = randomizedPoints[tiles.indexOf(tile)!].CGPointValue()
                 
             }
         }
